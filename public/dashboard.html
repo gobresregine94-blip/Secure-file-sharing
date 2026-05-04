@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Secure File Sharing System - Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body class="dashboard-page">
+  <div class="noise"></div>
+  <div class="background-aurora"></div>
+
+  <nav class="navbar reveal-up">
+    <div class="nav-brand">
+      <svg width="24" height="24" viewBox="0 0 36 36" fill="none">
+        <rect x="6" y="14" width="24" height="18" rx="3" stroke="var(--accent-strong)" stroke-width="2.4"/>
+        <path d="M12 14V10a6 6 0 0 1 12 0v4" stroke="var(--accent-strong)" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="18" cy="23" r="2.5" fill="var(--accent-strong)"/>
+      </svg>
+      <div>
+        <p class="nav-kicker">Secure File Exchange</p>
+        <span>Operations Dashboard</span>
+      </div>
+    </div>
+    <div class="nav-user">
+      <span id="navUsername" class="nav-email"></span>
+      <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <div class="dashboard reveal-up delay-1">
+    <aside class="sidebar">
+      <div class="sidebar-section stat-card">
+        <p class="sidebar-label">Storage Capacity</p>
+        <div class="storage-bar">
+          <div class="storage-fill" id="storageFill" style="width:0%"></div>
+        </div>
+        <p class="storage-text" id="storageText">Calculating...</p>
+      </div>
+
+      <div class="sidebar-section stat-card">
+        <p class="sidebar-label">Encryption Keys</p>
+        <div class="key-status">
+          <div class="key-item">
+            <span class="key-dot green"></span>
+            <span>RSA Public Key</span>
+          </div>
+          <div class="key-item">
+            <span class="key-dot green"></span>
+            <span>RSA Private Key</span>
+          </div>
+          <div class="key-item">
+            <span class="key-dot amber"></span>
+            <span>AES Session Key</span>
+          </div>
+        </div>
+        <button class="btn-secondary small" onclick="exportKeys()">Export My Keys</button>
+      </div>
+
+      <div class="sidebar-section stat-card">
+        <p class="sidebar-label">Security Profile</p>
+        <ul class="security-list">
+          <li>AES-256-GCM encryption</li>
+          <li>RSA-2048 key exchange</li>
+          <li>Secure password hashing</li>
+          <li>JWT protected sessions</li>
+          <li>Firestore access policies</li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section class="upload-section panel-surface">
+        <div class="section-heading">
+          <h2 class="section-title">Upload and Encrypt</h2>
+          <p>Files are encrypted before cloud upload and can be shared securely.</p>
+        </div>
+
+        <div class="upload-zone" id="uploadZone"
+             ondrop="handleDrop(event)"
+             ondragover="event.preventDefault()"
+             ondragenter="this.classList.add('drag-over')"
+             ondragleave="this.classList.remove('drag-over')">
+          <div class="upload-icon">
+            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="var(--accent-strong)" stroke-width="1.8">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <p class="upload-text">Drop files into the secure vault</p>
+          <p class="upload-sub">or choose from your device</p>
+          <label class="btn-browse">
+            Browse Files
+            <input type="file" id="fileInput" multiple style="display:none" onchange="handleFileSelect(event)"/>
+          </label>
+          <p class="upload-note">Each file uses a fresh AES key wrapped with RSA.</p>
+        </div>
+
+        <div id="fileQueue" class="file-queue"></div>
+
+        <div class="upload-controls" id="uploadControls" style="display:none">
+          <div class="input-group inline">
+            <label>Share with (optional)</label>
+            <input type="email" id="shareTarget" placeholder="recipient@email.com" />
+          </div>
+          <button class="btn-primary" onclick="uploadFiles()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            Encrypt and Upload
+          </button>
+        </div>
+
+        <div id="uploadProgress" class="progress-container" style="display:none">
+          <div class="progress-steps">
+            <div class="step" id="step1">
+              <div class="step-dot"></div>
+              <span>Generate Key</span>
+            </div>
+            <div class="step" id="step2">
+              <div class="step-dot"></div>
+              <span>Encrypt File</span>
+            </div>
+            <div class="step" id="step3">
+              <div class="step-dot"></div>
+              <span>Wrap AES Key</span>
+            </div>
+            <div class="step" id="step4">
+              <div class="step-dot"></div>
+              <span>Upload</span>
+            </div>
+            <div class="step" id="step5">
+              <div class="step-dot"></div>
+              <span>Done</span>
+            </div>
+          </div>
+          <div class="progress-bar-outer">
+            <div class="progress-bar-inner" id="progressBar"></div>
+          </div>
+          <p id="progressMsg" class="progress-msg"></p>
+        </div>
+      </section>
+
+      <section class="files-section panel-surface">
+        <div class="files-header">
+          <div class="section-heading compact">
+            <h2 class="section-title">Encrypted Files</h2>
+            <p>Your owned and shared files in one view.</p>
+          </div>
+          <button class="btn-secondary small" onclick="loadFiles()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Refresh
+          </button>
+        </div>
+
+        <div class="files-table-wrap">
+          <table class="files-table">
+            <thead>
+              <tr>
+                <th>File Name</th>
+                <th>Size</th>
+                <th>Uploaded</th>
+                <th>Owner</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="filesList">
+              <tr><td colspan="5" class="empty-state">Loading files...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="encLogModal" class="modal" style="display:none">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Encryption Log</h3>
+        <button onclick="closeModal('encLogModal')">X</button>
+      </div>
+      <div id="encLogContent" class="log-content"></div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/crypto.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

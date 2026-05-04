@@ -1,0 +1,46 @@
+// ============================================
+// firestore.rules  —  Firestore Security Rules
+// Deploy with: firebase deploy --only firestore:rules
+// ============================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── USERS COLLECTION ──────────────────────
+    // Users can only read/write their own document
+    match /users/{userId} {
+      allow read:   if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId;
+      allow delete: if false; // Prevent account deletion via client
+    }
+
+    // Allow searching users by email (for file sharing)
+    match /users/{userId} {
+      allow read: if request.auth != null
+                  && resource.data.keys().hasOnly(['name','email','publicKey']);
+    }
+
+    // ── FILES COLLECTION ─────────────────────
+    // Only the owner or recipient can access a file
+    match /files/{fileId} {
+      allow read: if request.auth != null
+                  && (resource.data.ownerId    == request.auth.uid
+                   || resource.data.recipientId == request.auth.uid);
+
+      allow create: if request.auth != null
+                    && request.resource.data.ownerId == request.auth.uid
+                    && request.resource.data.keys().hasAll([
+                         'fileName','encryptedData','encryptedAESKey','iv','ownerId'
+                       ]);
+
+      // Only owner can delete
+      allow delete: if request.auth != null
+                    && resource.data.ownerId == request.auth.uid;
+
+      // No updates allowed (immutable encrypted files)
+      allow update: if false;
+    }
+  }
+}
