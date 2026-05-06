@@ -1,4 +1,4 @@
-# 🔐 VaultShare — Secure File Sharing System
+# 🔐 SecureFileShare — Secure File Sharing System
 ### ITPE3227 Final Project | Hybrid Encryption: AES-256 + RSA-2048
 
 ![Encryption](https://img.shields.io/badge/Encryption-AES--256--GCM-green)
