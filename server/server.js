@@ -380,7 +380,7 @@ app.get('/api/users/search', authenticateToken, async (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({
     status:    'OK',
-    service:   'VaultShare API',
+    service:   'FileShare API',
     timestamp: new Date().toISOString(),
     version:   '1.0.0'
   });
@@ -393,7 +393,7 @@ app.get('*', (req, res) => {
 
 // ── START SERVER ──────────────────────────────
 app.listen(PORT, () => {
-  console.log(`\n🔐 VaultShare Server running on http://localhost:${PORT}`);
+  console.log(`\n🔐 FileShare Server running on http://localhost:${PORT}`);
   console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`   Firebase Project: ${serviceAccount.project_id}\n`);
 });

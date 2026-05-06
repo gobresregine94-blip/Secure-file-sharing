@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // ── CONFIGURATION ────────────────────────────
-define('AIzaSyAAzbAdq3a0sYrb2CkDwbo5U4u2prTUgRo',   getenv('AIzaSyAAzbAdq3a0sYrb2CkDwbo5U4u2prTUgRo')   ?: 'AIzaSyAAzbAdq3a0sYrb2CkDwbo5U4u2prTUgRo');
+define('AIzaSyBCfvFAhEbBJlHKLJz7dWGAehLIIjE8wwI',   getenv('AIzaSyAAzbAdq3a0sYrb2CkDwbo5U4u2prTUgRo')   ?: 'AIzaSyAAzbAdq3a0sYrb2CkDwbo5U4u2prTUgRo');
 define('fileshare-5a45c',getenv('fileshare-5a45c')?: 'fileshare-5a45c');
 define('JWT_SECRET',         getenv('JWT_SECRET')         ?: 'your-jwt-secret-here');
 define('NODE_API_URL',       getenv('NODE_API_URL')        ?: 'http://localhost:3000/api');

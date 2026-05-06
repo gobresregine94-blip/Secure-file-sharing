@@ -6,13 +6,13 @@
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAAzbAdq3a0sYrb2CkDwbo5U4u2prTUgRo",
-  authDomain: "fileshare-5a45c.firebaseapp.com",
-  projectId: "fileshare-5a45c",
-  storageBucket: "fileshare-5a45c.firebasestorage.app",
-  messagingSenderId: "21898232226",
-  appId: "1:21898232226:web:f7c7644824799337cdb2fb",
-  measurementId: "G-SNPXS1T4PY"
+  apiKey: "AIzaSyBCfvFAhEbBJlHKLJz7dWGAehLIIjE8wwI",
+  authDomain: "fileshare-83308.firebaseapp.com",
+  projectId: "fileshare-83308",
+  storageBucket: "fileshare-83308.firebasestorage.app",
+  messagingSenderId: "86234713315",
+  appId: "1:86234713315:web:f23f7280d3d728759689d6",
+  measurementId: "G-F6K4FRFDNP"
 };
 
 // Initialize Firebase (using compat SDK)
